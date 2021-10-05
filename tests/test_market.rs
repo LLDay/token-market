@@ -5,6 +5,8 @@ use helpers::{
 use solana_program_test::tokio;
 use solana_sdk::signer::Signer;
 
+use crate::helpers::client::TestClient;
+
 mod helpers;
 
 #[tokio::test]
@@ -45,17 +47,19 @@ async fn update_market() {
     let ctx = &mut get_context().await;
     let mint = generate_mint(ctx).await;
     let admin = get_admin(ctx, 1_000_000_000).await;
+    let client = TestClient::new(ctx, &mint.pubkey(), 10000, 10000).await;
     let market = TestMarket::new(ctx, &admin, &mint.pubkey(), 0, 1, 2).await;
 
     let settings = market.get_settings(ctx).await;
     assert_eq!(settings.sell_price, 1);
     assert_eq!(settings.buy_price, 2);
 
-    market.update(ctx, &admin, 100, 200).await;
+    market.update(ctx, &admin, 100, 200).await.unwrap();
 
     let settings = market.get_settings(ctx).await;
     assert_eq!(settings.sell_price, 100);
     assert_eq!(settings.buy_price, 200);
+    assert!(market.update(ctx, &client.client, 100, 200).await.is_err());
 }
 
 #[tokio::test]

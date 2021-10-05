@@ -1,6 +1,8 @@
 use solana_program::{pubkey::Pubkey, system_instruction};
 use solana_program_test::ProgramTestContext;
-use solana_sdk::{signature::Keypair, signer::Signer, transaction::Transaction};
+use solana_sdk::{
+    signature::Keypair, signer::Signer, transaction::Transaction, transport::TransportError,
+};
 use tokenmarket::{
     instruction::{MarketInstructions, PriceArgs},
     state::MarketSettings,
@@ -88,7 +90,7 @@ impl TestMarket {
         admin: &Keypair,
         sell_price: u64,
         buy_price: u64,
-    ) {
+    ) -> Result<(), TransportError> {
         let args = PriceArgs {
             sell_price,
             buy_price,
@@ -102,7 +104,6 @@ impl TestMarket {
                 ctx.last_blockhash,
             ))
             .await
-            .unwrap();
     }
 
     pub async fn get_settings(&self, ctx: &mut ProgramTestContext) -> MarketSettings {

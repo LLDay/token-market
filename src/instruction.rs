@@ -50,7 +50,7 @@ pub enum MarketInstructions {
     /// 0. `[signer, writable]` Client's account
     /// 1. `[writable]` Client's token account
     /// 2. `[writable]` Market's account with lamports, PDA
-    /// 3. `[writable]` Market's account with settings, PDA
+    /// 3. `[]` Market's account with settings, PDA
     /// 4. `[writable]` Market's token account, PDA
     /// 5. `[]` Token program
     /// 6. `[]` System program
